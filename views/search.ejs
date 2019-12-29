@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top has-navbar-fixed-bottom">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Search</title>
+    <link rel="stylesheet" href="/css/bulma.min.css" />
+    <link rel="stylesheet" href="/css/owl.carousel.min.css" />
+    <link rel="stylesheet" href="/css/owl.theme.default.min.css" />
+    <!-- <link rel="stylesheet" href="/css/style.css"> -->
+  </head>
+
+  <body>
+    <nav
+      class="navbar is-light is-fixed-top"
+      role="navigation"
+      aria-label="main navigation"
+    >
+      <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+          <img 
+            src="/img/logo.jpg"
+            width="165"
+            height="100"
+          />
+        </a>
+
+        <a
+          role="button"
+          class="navbar-burger burger"
+          aria-label="menu"
+          aria-expanded="false"
+          data-target="burgerIcon"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+
+      <div id="burgerIcon" class="navbar-menu">
+        <div class="navbar-start">
+          <a href="/home" class="navbar-item">
+            <i class="fas fa-home"></i>&nbsp;Home
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <section class="section">
+      <div class="container">
+        <% if(superhero !== null){ %> 
+        <div class="columns is-desktop">
+          <div class="owl-carousel owl-theme">
+           
+            <% for(var i=0; i < superhero.length;
+            i++) { %>
+            <div class="column">
+              <div class="card">
+                <div class="card-image">
+                  <figure class="image is-1by1">
+                    <% if(superhero[i].image.url !== null){%>
+                    <img
+                      src="<%= superhero[i].image.url %>"
+                      alt="<%= superhero.name %>"
+                      onerror="javascript:this.src='/img/img.png'"
+                    />
+                    <% } else{ %>
+                    <img
+                      src="https://bulma.io/images/placeholders/128x128.png"
+                      alt="<%= superhero.name %>"
+                    />
+                    <% } %>
+                  </figure>
+                </div>
+                <div class="card-content">
+                  <div class="media">
+                    <div class="media-content">
+                      <p class="title is-4"><%= superhero[i].name %></p>
+                      <% if(superhero[i].biography.publisher !== 'null'){ %>
+                      <p class="subtitle is-6">
+                        <%= superhero[i].biography.publisher %>
+                      </p>
+                      <% } %>
+                    </div>
+                  </div>
+
+                  <form action="/viewDetails" method="post">
+                    <input
+                      type="hidden"
+                      name="viewDetails"
+                      value="<%= superhero[i].id %>"
+                    />
+                    <input
+                      type="hidden"
+                      name="searchKey"
+                      value="<%= searchKey %>"
+                    />
+                    <button type="submit" class="button is-link">
+                      View Details
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <% } %>
+          </div>
+        </div>
+        
+       <% } else{ %>
+          <div class="columns is-desktop">
+            <div class="column">
+                <figure class="image is-3by1">
+                <img src="/img/no_data.svg">        
+              </figure>
+            </div>
+            </div>
+            <% } %>
+
+        <div class="columns is-desktop">
+          <div class="column is-half">
+            <% if(superhero !== null){ %>
+            <h1 class="title">Not satisfied with results ?</h1>
+            <% }  else{ %>
+              <h1 class="title">Data Not Found</h1>
+              <% } %>
+            <h2 class="subtitle">Try Searching again</h2>
+            <h3>
+              Certain characters need "-" between name.
+              <strong>Eg: Spider-man</strong>
+            </h3>
+          </div>
+          <div class="column">
+            <div class="card-content">
+              <form action="/search" method="POST">
+                <div class="field is-grouped">
+                  <p class="control has-icons-left has-icons-right is-expanded">
+                    <input
+                      class="input"
+                      type="text"
+                      name="searchKey"
+                      placeholder="Search"
+                    />
+                    <span class="icon is-small is-left">
+                      <i class="fas fa-search"></i>
+                    </span>
+                  </p>
+
+                  <p class="control">
+                    <button type="submit" class="button is-link">
+                      Search
+                    </button>
+                  </p>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav
+      class="navbar is-light is-fixed-bottom"
+      role="navigation"
+      aria-label="main navigation"
+    >
+      <div class="navbar-brand navbar-end">
+        <a href="https://bulma.io">
+          <img src="https://bulma.io/images/made-with-bulma.png" alt="Made with Bulma" width="128" height="60">
+          </a>
+      </div>
+    </nav>
+    <script
+      type="text/javascript"
+      src="//code.jquery.com/jquery-1.11.0.min.js"
+    ></script>
+
+    <script defer type="text/javascript" src="/js/owl.carousel.min.js"></script>
+    <script
+      defer
+      src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
+    ></script>
+    <script>
+      $(document).ready(function() {
+        $(".owl-carousel").owlCarousel({
+          loop: true,
+          margin: 10,
+          responsiveClass: true,
+
+          responsive: {
+            0: {
+              items: 1
+            },
+            600: {
+              items: 3
+            },
+            1000: {
+              items: 5,
+
+              loop: false
+            }
+          }
+        });
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Get all "navbar-burger" elements
+        const $navbarBurgers = Array.prototype.slice.call(
+          document.querySelectorAll(".navbar-burger"),
+          0
+        );
+
+        // Check if there are any navbar burgers
+        if ($navbarBurgers.length > 0) {
+          // Add a click event on each of them
+          $navbarBurgers.forEach(el => {
+            el.addEventListener("click", () => {
+              // Get the target from the "data-target" attribute
+              const target = el.dataset.target;
+              const $target = document.getElementById(target);
+
+              // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+              el.classList.toggle("is-active");
+              $target.classList.toggle("is-active");
+            });
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
