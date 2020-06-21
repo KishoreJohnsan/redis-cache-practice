@@ -2,8 +2,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("request");
 const app = express();
+require('dotenv').config();
 
-const apiKey = "******************";
+const apiKey = process.env.SUPERHERO_API_KEY;
+const port = process.env.PORT || 3000;
 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -29,8 +31,7 @@ app.get("/error", function(req, res) {
 
 app.post("/search", function(req, res) {
   let name = req.body.searchKey;
-  console.log(name);
-
+  
   let cacheResult = cache[name];
 
   let url = `https://superheroapi.com/api/${apiKey}/search/${name}`;
@@ -73,8 +74,7 @@ app.get("/random", function(req, res) {
   let id = Math.floor(Math.random() * 730) + 1;
 
   let url = `https://superheroapi.com/api/${apiKey}/${id}`;
-  console.log(id);
-
+  
   let cacheResult = cache[id];
 
   if (cacheResult != null) {
@@ -95,7 +95,6 @@ app.get("/random", function(req, res) {
             error: "Error, please try again"
           });
         } else {
-          console.log(superhero.name);
           cache[id] = JSON.stringify(superhero);
           res.render("random", { superhero: superhero, error: null });
         }
@@ -109,7 +108,6 @@ app.post("/viewDetails", function(req, res) {
   let searchKey = req.body.searchKey;
 
   let url = `https://superheroapi.com/api/${apiKey}/${viewKey}`;
-  console.log(viewKey);
 
   let cacheResult = cache[viewKey];
 
@@ -135,7 +133,6 @@ app.post("/viewDetails", function(req, res) {
             error: "Error, please try again"
           });
         } else {
-          console.log(superhero.name);
           cache[viewKey] = JSON.stringify(superhero);
           res.render("view", {
             superhero: superhero,
@@ -152,6 +149,6 @@ app.get("*", function(req, res) {
   res.render("error", { superhero: null, error: null });
 });
 
-app.listen(3000, function() {
-  console.log("Rock N Roll Buckaroo @ 3000!");
+app.listen(port, function() {
+  console.log("Server running @" + port);
 });
