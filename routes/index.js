@@ -44,7 +44,7 @@ router.post("/search", async (req, res) => {
 
   try {
     client.get(name, async (err, data) => {
-      if (data !== null) {
+      if (data !== null || data !== undefined) {
         superhero = JSON.parse(data);
       } else {
         superhero = await services.searchCharacter(name);
@@ -70,7 +70,7 @@ router.post("/viewDetails", async (req, res) => {
 
   try {
     client.get(viewKey, async (err, data) => {
-      if (data !== null) {
+      if (data !== null || data !== undefined) {
         superhero = JSON.parse(data);
       } else {
         superhero = await services.getDetails(viewKey);
@@ -95,7 +95,7 @@ router.get("/random", async (req, res) => {
 
   try {
     client.get(id.toString(), async (err, data) => {
-      if (data !== null) {
+      if (data !== null || data !== undefined) {
         superhero = JSON.parse(data);
       } else {
         superhero = await services.getRandomCharacter(id);
