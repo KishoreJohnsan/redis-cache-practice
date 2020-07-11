@@ -45,9 +45,7 @@ router.post("/search", async (req, res) => {
   try {
     client.get(name, async (err, data) => {
       console.log(data);
-      if (data !== null || data !== undefined) {
-        superhero = JSON.parse(data);
-      } else {
+      if (data === null || data === undefined)  {
         superhero = await services.searchCharacter(name);
         if (superhero === undefined) {
           errorString = "Error, please try again";
@@ -55,6 +53,9 @@ router.post("/search", async (req, res) => {
         } else {
           client.setex(name, 1800, JSON.stringify(superhero));
         }
+      }
+      else{
+        superhero = JSON.parse(data);
       }
       services.renderOutput(res, "search", superhero, name, errorString);
     });
@@ -72,9 +73,7 @@ router.post("/viewDetails", async (req, res) => {
   try {
     client.get(viewKey, async (err, data) => {
       console.log(data);
-      if (data !== null || data !== undefined) {
-        superhero = JSON.parse(data);
-      } else {
+       if (data === null || data === undefined) {
         superhero = await services.getDetails(viewKey);
         if (superhero.id === undefined) {
           errorString = "Error, please try again";
@@ -82,6 +81,9 @@ router.post("/viewDetails", async (req, res) => {
         } else {
           client.setex(viewKey, 1800, JSON.stringify(superhero));
         }
+      }
+      else{
+        superhero = JSON.parse(data);
       }
       services.renderOutput(res, "view", superhero, searchKey, errorString);
     });
@@ -98,9 +100,7 @@ router.get("/random", async (req, res) => {
   try {
     client.get(id.toString(), async (err, data) => {
       console.log(data);
-      if (data !== null || data !== undefined) {
-        superhero = JSON.parse(data);
-      } else {
+      if (data === null || data === undefined) {
         superhero = await services.getRandomCharacter(id);
 
         if (superhero.id === undefined) {
@@ -108,7 +108,10 @@ router.get("/random", async (req, res) => {
         } else {
           client.setex(id.toString(), 1800, JSON.stringify(superhero));
         }
+      } else {
+        superhero = JSON.parse(data);
       }
+
       services.renderOutput(res, "random", superhero, null, errorString);
     });
   } catch (error) {
