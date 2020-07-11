@@ -1,16 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const services = require("../controllers/controller");
-//const redis = require("redis");
+const redis = require("redis");
 
 const REDIS_PORT = process.env.PORT || 6379;
 let client = null;
 
-if (process.env.REDISTOGO_URL) {
-  const rtg = require("url").parse(process.env.REDISTOGO_URL);
-  client = require("redis").createClient(rtg.port, rtg.hostname);
-
-  client.auth(rtg.auth.split(":")[1]);
+if (process.env.REDIS_HOST) {
+  client = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST, {
+    no_ready_check: true,
+  });
+  client.auth(process.env.PWD);
 } else {
   client = require("redis").createClient(REDIS_PORT);
 }
@@ -18,7 +18,7 @@ if (process.env.REDISTOGO_URL) {
 //const client = redis.createClient(REDIS_PORT);
 
 client.on("error", (err) => {
-  console.log(err);
+  console.log("Error in redis connection");
 });
 
 router.get("/", (req, res) => {
@@ -52,7 +52,7 @@ router.post("/search", async (req, res) => {
           errorString = "Error, please try again";
           superhero = null;
         } else {
-          client.setex(name, 3600, JSON.stringify(superhero));
+          client.setex(name, 1800, JSON.stringify(superhero));
         }
       }
       services.renderOutput(res, "search", superhero, name, errorString);
@@ -78,7 +78,7 @@ router.post("/viewDetails", async (req, res) => {
           errorString = "Error, please try again";
           superhero = null;
         } else {
-          client.setex(viewKey, 3600, JSON.stringify(superhero));
+          client.setex(viewKey, 1800, JSON.stringify(superhero));
         }
       }
       services.renderOutput(res, "view", superhero, searchKey, errorString);
@@ -103,7 +103,7 @@ router.get("/random", async (req, res) => {
         if (superhero.id === undefined) {
           errorString = "Error, please try again";
         } else {
-          client.setex(id.toString(), 3600, JSON.stringify(superhero));
+          client.setex(id.toString(), 1800, JSON.stringify(superhero));
         }
       }
       services.renderOutput(res, "random", superhero, null, errorString);

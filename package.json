@@ -2,9 +2,12 @@
   "name": "comichar",
   "version": "1.0.0",
   "description": "All comic characters in one place",
+  "engines": {
+    "node": "13.x"
+  },
   "main": "server.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node server",
+    "start": "node server",
     "dev": "cross-env NODE_ENV=development nodemon server"
   },
   "author": "",
