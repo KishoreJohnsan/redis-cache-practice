@@ -3,22 +3,22 @@ const router = express.Router();
 const services = require("../controllers/controller");
 const redis = require("redis");
 
-const REDIS_PORT = process.env.PORT || 6379;
+const PORT = process.env.REDIS_PORT || 6379;
 let client = null;
 
 if (process.env.REDIS_HOST) {
-  client = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST, {
+  client = redis.createClient(PORT, process.env.REDIS_HOST, {
     no_ready_check: true,
   });
   client.auth(process.env.PWD);
 } else {
-  client = require("redis").createClient(REDIS_PORT);
+  client = require("redis").createClient(PORT);
 }
 
 //const client = redis.createClient(REDIS_PORT);
 
 client.on("error", (err) => {
-  console.log("Error in redis connection");
+  console.log(err);
 });
 
 router.get("/", (req, res) => {
@@ -45,7 +45,7 @@ router.post("/search", async (req, res) => {
   try {
     client.get(name, async (err, data) => {
       console.log(data);
-      if (data === null || data === undefined)  {
+      if (data === null || data === undefined) {
         superhero = await services.searchCharacter(name);
         if (superhero === undefined) {
           errorString = "Error, please try again";
@@ -53,8 +53,7 @@ router.post("/search", async (req, res) => {
         } else {
           client.setex(name, 1800, JSON.stringify(superhero));
         }
-      }
-      else{
+      } else {
         superhero = JSON.parse(data);
       }
       services.renderOutput(res, "search", superhero, name, errorString);
@@ -73,7 +72,7 @@ router.post("/viewDetails", async (req, res) => {
   try {
     client.get(viewKey, async (err, data) => {
       console.log(data);
-       if (data === null || data === undefined) {
+      if (data === null || data === undefined) {
         superhero = await services.getDetails(viewKey);
         if (superhero.id === undefined) {
           errorString = "Error, please try again";
@@ -81,8 +80,7 @@ router.post("/viewDetails", async (req, res) => {
         } else {
           client.setex(viewKey, 1800, JSON.stringify(superhero));
         }
-      }
-      else{
+      } else {
         superhero = JSON.parse(data);
       }
       services.renderOutput(res, "view", superhero, searchKey, errorString);
@@ -111,7 +109,6 @@ router.get("/random", async (req, res) => {
       } else {
         superhero = JSON.parse(data);
       }
-
       services.renderOutput(res, "random", superhero, null, errorString);
     });
   } catch (error) {
