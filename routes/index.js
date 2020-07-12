@@ -9,12 +9,10 @@ let client = null;
 if (process.env.REDIS_HOST) {
   client = redis.createClient({
     host:process.env.REDIS_HOST,
-    port:process.env.REDIS_PORT,
-    password:process.env.PWD,
+    port:process.env.REDIS_PORT,    
     no_ready_check: true,
     auth_pass: process.env.PWD,
-  });
-  client.auth(process.env.PWD);
+  });  
 } else {
   client = redis.createClient(PORT);
 }
@@ -43,7 +41,7 @@ router.post("/search", async (req, res) => {
   let name = req.body.searchKey;
   let errorString = "";
   let superhero = null;
-
+  client.auth(process.env.PWD);
   try {
     client.get(name, async (err, data) => {
       console.log(data);
@@ -70,7 +68,7 @@ router.post("/viewDetails", async (req, res) => {
   let searchKey = req.body.searchKey;
   let errorString = "";
   let superhero = null;
-
+  client.auth(process.env.PWD);
   try {
     client.get(viewKey, async (err, data) => {
       console.log(data);
@@ -96,7 +94,7 @@ router.get("/random", async (req, res) => {
   let id = Math.floor(Math.random() * 730) + 1;
   let errorString = "";
   let superhero = null;
-
+  client.auth(process.env.PWD);
   try {
     client.get(id.toString(), async (err, data) => {
       console.log(data);
