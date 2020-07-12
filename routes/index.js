@@ -8,11 +8,11 @@ let client = null;
 
 if (process.env.REDIS_HOST) {
   client = redis.createClient({
-    host:process.env.REDIS_HOST,
-    port:process.env.REDIS_PORT,    
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
     no_ready_check: true,
     password: process.env.PWD,
-  });  
+  });
 } else {
   client = redis.createClient(PORT);
 }
@@ -40,10 +40,9 @@ router.get("/error", (req, res) => {
 router.post("/search", async (req, res) => {
   let name = req.body.searchKey;
   let errorString = "";
-  let superhero = null;  
+  let superhero = null;
   try {
     client.get(name, async (err, data) => {
-      console.log(data);
       if (data === null || data === undefined) {
         superhero = await services.searchCharacter(name);
         if (superhero === undefined) {
@@ -66,10 +65,9 @@ router.post("/viewDetails", async (req, res) => {
   let viewKey = req.body.viewDetails;
   let searchKey = req.body.searchKey;
   let errorString = "";
-  let superhero = null;  
+  let superhero = null;
   try {
     client.get(viewKey, async (err, data) => {
-      console.log(data);
       if (data === null || data === undefined) {
         superhero = await services.getDetails(viewKey);
         if (superhero.id === undefined) {
@@ -91,10 +89,9 @@ router.post("/viewDetails", async (req, res) => {
 router.get("/random", async (req, res) => {
   let id = Math.floor(Math.random() * 730) + 1;
   let errorString = "";
-  let superhero = null;  
+  let superhero = null;
   try {
     client.get(id.toString(), async (err, data) => {
-      console.log(data);
       if (data === null || data === undefined) {
         superhero = await services.getRandomCharacter(id);
 
