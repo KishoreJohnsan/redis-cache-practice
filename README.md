@@ -1,5 +1,5 @@
 ### Web app for consuming superhero API
-NodeJs client for consuming [Superhero API](https://superheroapi.com/)
+NodeJs client for consuming [Superhero API](https://superheroapi.com/).
 Redis used as caching mechanism
 
 ### Functionalities
