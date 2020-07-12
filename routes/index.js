@@ -7,16 +7,17 @@ const PORT = process.env.REDIS_PORT || 6379;
 let client = null;
 
 if (process.env.REDIS_HOST) {
-  client = redis.createClient(PORT, process.env.REDIS_HOST, {
-    no_ready_check: true,auth_pass: process.env.PWD,   
+  client = redis.createClient({
+    host:process.env.REDIS_HOST,
+    port:process.env.REDIS_PORT,
+    password:process.env.PWD,
+    no_ready_check: true,
+    auth_pass: process.env.PWD,
   });
-  //client.auth(process.env.PWD);
+  client.auth(process.env.PWD);
 } else {
   client = redis.createClient(PORT);
-  client.auth(process.env.PWD);
 }
-
-//const client = redis.createClient(REDIS_PORT);
 
 client.on("error", (err) => {
   console.log(err);
